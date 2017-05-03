@@ -3,6 +3,7 @@ package com.udacity.stockhawk.sync;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.ComponentName;
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -77,6 +78,13 @@ public final class QuoteSyncJob {
 
                 Stock stock = quotes.get(symbol);
                 StockQuote quote = stock.getQuote();
+
+                if (quote.getAsk() == null){
+                    PrefUtils.removeStock(context, symbol);
+                    //context.getContentResolver().delete(Contract.Quote.makeUriForStock(symbol), null, null);
+                    continue;
+                }
+
                 float price = quote.getPrice().floatValue();
                 float change = quote.getChange().floatValue();
                 float percentChange = quote.getChangeInPercent().floatValue();
@@ -118,8 +126,6 @@ public final class QuoteSyncJob {
 
         } catch (IOException exception) {
             Timber.e(exception, "Error fetching stock quotes");
-        }catch (Exception e){
-            Timber.e(e, "Error fetching stock quotes");
         }
     }
 

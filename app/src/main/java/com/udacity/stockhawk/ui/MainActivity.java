@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         SwipeRefreshLayout.OnRefreshListener,
         StockAdapter.StockAdapterOnClickHandler {
 
+    public static final String EXTRA_SYMBOL = "extra_quote_symbol";
     private static final int STOCK_LOADER = 0;
     @SuppressWarnings("WeakerAccess")
     @BindView(R.id.recycler_view)
@@ -48,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public void onClick(String symbol) {
         Intent intent = new Intent(this, MoreInfoActivity.class);
+        intent.putExtra(EXTRA_SYMBOL, symbol);
         startActivity(intent);
         Timber.d("Symbol clicked: %s", symbol);
     }
@@ -70,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         QuoteSyncJob.initialize(this);
         getSupportLoaderManager().initLoader(STOCK_LOADER, null, this);
 
-        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT | ItemTouchHelper.LEFT) {
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
                 return false;
