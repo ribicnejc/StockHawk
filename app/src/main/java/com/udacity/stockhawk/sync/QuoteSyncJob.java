@@ -14,6 +14,7 @@ import com.udacity.stockhawk.data.Contract;
 import com.udacity.stockhawk.data.PrefUtils;
 import com.udacity.stockhawk.ui.MainActivity;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashSet;
@@ -32,7 +33,7 @@ import yahoofinance.quotes.stock.StockQuote;
 public final class QuoteSyncJob {
 
     private static final int ONE_OFF_ID = 2;
-    private static final String ACTION_DATA_UPDATED = "com.udacity.stockhawk.ACTION_DATA_UPDATED";
+    public static final String ACTION_DATA_UPDATED = "com.udacity.stockhawk.ACTION_DATA_UPDATED";
     private static final int PERIOD = 300000;
     private static final int INITIAL_BACKOFF = 10000;
     private static final int PERIODIC_ID = 1;
@@ -49,6 +50,7 @@ public final class QuoteSyncJob {
         Calendar to = Calendar.getInstance();
         from.add(Calendar.YEAR, -YEARS_OF_HISTORY);
 
+        //TODO check why is failing with insert, and its constatlly loading.
         try {
 
             Set<String> stockPref = PrefUtils.getStocks(context);
@@ -61,7 +63,7 @@ public final class QuoteSyncJob {
             if (stockArray.length == 0) {
                 return;
             }
-
+            //TODO out of bound array at yahooFinance
             Map<String, Stock> quotes = YahooFinance.get(stockArray);
             Iterator<String> iterator = stockCopy.iterator();
 
@@ -75,16 +77,6 @@ public final class QuoteSyncJob {
 
                 Stock stock = quotes.get(symbol);
                 StockQuote quote = stock.getQuote();
-                if(stock.getCurrency() == null){
-
-
-                    Toast.makeText(context, "Looks like that stock doesn't exists!", Toast.LENGTH_SHORT).show();
-
-
-                    PrefUtils.removeStock(context, symbol);
-                    Timber.d(symbol + " doesn't exists, Removing.");
-                    continue;
-                }
                 float price = quote.getPrice().floatValue();
                 float change = quote.getChange().floatValue();
                 float percentChange = quote.getChangeInPercent().floatValue();
@@ -124,8 +116,10 @@ public final class QuoteSyncJob {
             Intent dataUpdatedIntent = new Intent(ACTION_DATA_UPDATED);
             context.sendBroadcast(dataUpdatedIntent);
 
-        } catch (Exception exception) {
+        } catch (IOException exception) {
             Timber.e(exception, "Error fetching stock quotes");
+        }catch (Exception e){
+            Timber.e(e, "Error fetching stock quotes");
         }
     }
 
