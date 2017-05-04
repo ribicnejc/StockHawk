@@ -84,7 +84,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 String symbol = adapter.getSymbolAtPosition(viewHolder.getAdapterPosition());
                 getContentResolver().delete(Contract.Quote.makeUriForStock(symbol), null, null);
                 PrefUtils.removeStock(MainActivity.this, symbol);
-                onRefresh();
+                checkData();
+                //TODO explain why
+                //TODO check if list is empty!!! and show msg!
+                //onRefresh();
             }
         }).attachToRecyclerView(stockRecyclerView);
 
@@ -96,6 +99,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = cm.getActiveNetworkInfo();
         return networkInfo != null && networkInfo.isConnectedOrConnecting();
+    }
+
+    public void checkData(){
+        if (PrefUtils.getStocks(this).size() == 0) {
+            error.setText(getString(R.string.error_no_stocks));
+            error.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -124,7 +134,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     void addStock(String symbol) {
-        if (symbol != null && !symbol.isEmpty()) {
+        if (symbol != null && !symbol.isEmpty() && !symbol.contains(" ")) {
 
             if (networkUp()) {
                 swipeRefreshLayout.setRefreshing(true);

@@ -73,6 +73,11 @@ public final class QuoteSyncJob {
 
 
                 Stock stock = quotes.get(symbol);
+                if (stock == null){
+                    PrefUtils.removeStock(context, symbol);
+                    continue;
+                }
+
                 StockQuote quote = stock.getQuote();
 
                 if (quote.getPrice() == null || quote.getChange() == null){
@@ -121,6 +126,7 @@ public final class QuoteSyncJob {
         } catch (IOException exception) {
             Timber.e(exception, "Error fetching stock quotes");
         } catch (Exception e){
+            //Just in case if something is wrong with API
             Timber.e(e, "Other things went wrong");
         }
     }

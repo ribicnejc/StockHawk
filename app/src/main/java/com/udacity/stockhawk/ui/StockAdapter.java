@@ -74,7 +74,7 @@ class StockAdapter extends RecyclerView.Adapter<StockAdapter.StockViewHolder> {
         float rawAbsoluteChange = cursor.getFloat(Contract.Quote.POSITION_ABSOLUTE_CHANGE);
         float percentageChange = cursor.getFloat(Contract.Quote.POSITION_PERCENTAGE_CHANGE);
 
-        if (rawAbsoluteChange > 0) {
+        if (rawAbsoluteChange >= 0) {
             holder.change.setBackgroundResource(R.drawable.percent_change_pill_green);
         } else {
             holder.change.setBackgroundResource(R.drawable.percent_change_pill_red);

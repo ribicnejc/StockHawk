@@ -1,17 +1,12 @@
 package com.udacity.stockhawk.ui;
 
-import android.content.ContentResolver;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Binder;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
@@ -21,10 +16,7 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
-import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
-import com.github.mikephil.charting.utils.Utils;
-import com.github.mikephil.charting.utils.ViewPortHandler;
 import com.udacity.stockhawk.R;
 import com.udacity.stockhawk.data.Contract;
 
@@ -125,7 +117,7 @@ public class MoreInfoActivity extends AppCompatActivity {
             String tmp = sdf.format(calendar.getTime());
             dat2[dat.length - i - 1] = tmp;
             float price = Float.parseFloat(t[1]);
-            Entry ent = new Entry(100 - i, price, null);
+            Entry ent = new Entry(dat.length - i - 1, price, null);
             values.add(ent);
         }
         LineDataSet set1;
@@ -142,8 +134,6 @@ public class MoreInfoActivity extends AppCompatActivity {
         } else {
             // create a dataset and give it a type
             set1 = new LineDataSet(values, String.format("%s growth line", symbol));
-            //set1.setFillColor(Color.WHITE);
-            //et1.setHighLightColor(Color.WHITE);
 
             set1.setHighLightColor(Color.WHITE);
             set1.setLineWidth(1f);
@@ -168,11 +158,11 @@ public class MoreInfoActivity extends AppCompatActivity {
         }
     }
 
-    public class MyXAxisValueFormatter implements IAxisValueFormatter {
+    private class MyXAxisValueFormatter implements IAxisValueFormatter {
 
         private String[] mValues;
 
-        public MyXAxisValueFormatter(String[] values) {
+        private MyXAxisValueFormatter(String[] values) {
             this.mValues = values;
         }
 
@@ -189,11 +179,11 @@ public class MoreInfoActivity extends AppCompatActivity {
     //TODO add few more info elements
     //TODO check graph for loops for incorrectness
     //TODO after all coding check for RTL and TALK BACK and check for all STRINGS and translatable string also
-    public class MyYAxisValueFormatter implements IAxisValueFormatter {
+    private class MyYAxisValueFormatter implements IAxisValueFormatter {
 
         private DecimalFormat mFormat;
 
-        public MyYAxisValueFormatter() {
+        private MyYAxisValueFormatter() {
 
             // format values to 1 decimal digit
             mFormat = new DecimalFormat("###,###,##0.0");
