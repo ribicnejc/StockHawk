@@ -5,13 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/touch_selector_detail">
-
+<!--TODO add focusable and content desc-->
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="?android:attr/listPreferredItemHeight"
         android:contentDescription="@string/content_description_item"
-
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingLeft="16dp"

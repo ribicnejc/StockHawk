@@ -24,6 +24,7 @@ import com.udacity.stockhawk.R;
 import com.udacity.stockhawk.data.Contract;
 import com.udacity.stockhawk.data.PrefUtils;
 import com.udacity.stockhawk.sync.QuoteSyncJob;
+import com.udacity.stockhawk.widget.DetailWidgetProvider;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -188,6 +189,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             PrefUtils.toggleDisplayMode(this);
             setDisplayModeMenuItemIcon(item);
             adapter.notifyDataSetChanged();
+
+            Intent intent = new Intent(this, DetailWidgetProvider.class);
+            intent.setAction(QuoteSyncJob.ACTION_DATA_UPDATED);
+            sendBroadcast(intent);
+
             return true;
         }
         return super.onOptionsItemSelected(item);

@@ -9,4 +9,6 @@
     <color name="material_green_700">#00C853</color>
     <color name="activated">#555555</color>
     <color name="white">#222222</color>
+
+    <color name="widget_primary_color">#333333</color>
 </resources>

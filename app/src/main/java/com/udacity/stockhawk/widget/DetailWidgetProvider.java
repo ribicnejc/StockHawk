@@ -6,23 +6,26 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v4.app.TaskStackBuilder;
 import android.widget.RemoteViews;
 
 import com.udacity.stockhawk.R;
+import com.udacity.stockhawk.data.PrefUtils;
 import com.udacity.stockhawk.sync.QuoteSyncJob;
 import com.udacity.stockhawk.ui.MainActivity;
 import com.udacity.stockhawk.ui.MoreInfoActivity;
 
 public class DetailWidgetProvider extends AppWidgetProvider{
+    public static final String EXTRA_PERCENT = "extra_percent_on_widget";
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         for (int appWidgetId : appWidgetIds){
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_detail);
             Intent intent = new Intent(context, MainActivity.class);
             PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-            views.setOnClickPendingIntent(R.id.widget_icon, pendingIntent);
+            views.setOnClickPendingIntent(R.id.widget, pendingIntent);
             setRemoteAdapter(context, views);
 
 
@@ -39,8 +42,10 @@ public class DetailWidgetProvider extends AppWidgetProvider{
 
     }
     private void setRemoteAdapter(Context context, @NonNull final RemoteViews views) {
-        views.setRemoteAdapter(R.id.widget_list,
-                new Intent(context, DetailWidgetRemoteViewsService.class));
+        String percent = PrefUtils.getDisplayMode(context);
+        Intent intent = new Intent(context, DetailWidgetRemoteViewsService.class);
+        intent.putExtra(EXTRA_PERCENT, percent);
+        views.setRemoteAdapter(R.id.widget_list, intent);
     }
 
     @Override

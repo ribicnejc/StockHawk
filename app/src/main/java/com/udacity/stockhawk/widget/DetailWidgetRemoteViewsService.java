@@ -73,22 +73,40 @@ public class DetailWidgetRemoteViewsService extends RemoteViewsService {
                 String stockPrice = data.getString(INDEX_POSITION_PRICE);
                 String stockAbsoluteChange = data.getString(INDEX_POSITION_ABSOLUTE_CHANGE);
                 String stockPercentageChange = data.getString(INDEX_POSITION_PERCENTAGE_CHANGE);
-                //TODO check which is checked, maybe its saved in prefs, or you save it in prefs!
 
-//                String pref = PrefUtils.getDisplayMode(intent.)
-//                        .equals(getString(R.string.pref_display_mode_absolute_key));
-
+                String together = stockAbsoluteChange;
+                boolean percent = false;
+                if (intent.hasExtra(DetailWidgetProvider.EXTRA_PERCENT)){
+                    String extra = intent.getStringExtra(DetailWidgetProvider.EXTRA_PERCENT);
+                    if (extra.equals("percentage")){
+                        together = stockPercentageChange;
+                        percent = true;
+                    }
+                }
 
                 views.setTextViewText(R.id.widget_symbol, stockSymbol);
-                views.setTextViewText(R.id.widget_price, stockPrice);
-                views.setTextViewText(R.id.widget_change, stockAbsoluteChange);
+                views.setTextViewText(R.id.widget_price, "$"+stockPrice);
+
+                float raw = Float.parseFloat(together);
+                if (raw < 0){
+                    views.setInt(R.id.widget_change, "setBackgroundResource", R.drawable.percent_change_pill_red);
+                }else{
+                    together = "+" + together;
+                    views.setInt(R.id.widget_change, "setBackgroundResource", R.drawable.percent_change_pill_green);
+                }
+                if (percent){
+                    views.setTextViewText(R.id.widget_change, together + "%");
+                }else{
+                    String tmp = together.charAt(0) + "$" + together.substring(1);
+                    views.setTextViewText(R.id.widget_change, tmp);
+                }
+
+
 
                 //TODO content description for widget
 
                 final Intent fillInIntent = new Intent();
-                //Uri uri = Contract.Quote.makeUriForStock(stockSymbol);
                 fillInIntent.putExtra(MainActivity.EXTRA_SYMBOL, stockSymbol);
-                //fillInIntent.setData(uri);
                 views.setOnClickFillInIntent(R.id.widget_list_item, fillInIntent);
                 return views;
             }
