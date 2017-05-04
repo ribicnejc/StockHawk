@@ -34,5 +34,6 @@
     <string name="content_description_fab">Add button to add stock!</string>
     <string name="content_description_item">Stock item, when pressed you get more info</string>
     <string name="title_widget">Stock checker</string>
+    <string name="content_description_widget_dollar">Icon to change dollars to percent</string>
 
 </resources>

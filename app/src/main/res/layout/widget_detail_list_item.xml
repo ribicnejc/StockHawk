@@ -11,12 +11,14 @@
         android:layout_width="match_parent"
         android:layout_height="?android:attr/listPreferredItemHeight"
         android:contentDescription="@string/content_description_item"
-        android:focusable="true"
+
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingLeft="16dp"
         android:paddingRight="16dp">
-        <!--TODO add riplle effect-->
+        <!--
+        android:focusable="true"
+        TODO add riplle effect-->
         <TextView
             android:id="@+id/widget_symbol"
             style="@style/StockSymbolTextStyle"

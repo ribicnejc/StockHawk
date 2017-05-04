@@ -22,14 +22,11 @@ public class DetailWidgetProvider extends AppWidgetProvider{
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_detail);
             Intent intent = new Intent(context, MainActivity.class);
             PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-            views.setOnClickPendingIntent(R.id.widget, pendingIntent);
+            views.setOnClickPendingIntent(R.id.widget_icon, pendingIntent);
             setRemoteAdapter(context, views);
 
-            boolean useDetailActivity = context.getResources()
-                    .getBoolean(R.bool.use_detail_activity);
-            Intent clickIntentTemplate = useDetailActivity
-                    ? new Intent(context, MoreInfoActivity.class)
-                    : new Intent(context, MainActivity.class);
+
+            Intent clickIntentTemplate = new Intent(context, MoreInfoActivity.class);
             PendingIntent clickPendingIntentTemplate = TaskStackBuilder.create(context)
                     .addNextIntentWithParentStack(clickIntentTemplate)
                     .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);

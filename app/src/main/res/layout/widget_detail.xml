@@ -13,10 +13,24 @@
         android:background="@color/colorPrimary">
         <ImageView
             android:layout_width="wrap_content"
+            android:id="@+id/widget_icon"
             android:layout_height="wrap_content"
             android:contentDescription="@string/app_name"
-            android:layout_gravity="center"
+            android:paddingEnd="20dp"
+            android:paddingStart="20dp"
+            android:layout_gravity="center_vertical|start"
             android:src="@mipmap/ic_launcher"
+            />
+        <ImageView
+            android:id="@+id/widget_dollar"
+            android:contentDescription="@string/content_description_widget_dollar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_dollar"
+            android:layout_marginEnd="20dp"
+            android:layout_marginStart="20dp"
+            android:layout_gravity="center_vertical|end"
+
             />
     </FrameLayout>
     <FrameLayout
@@ -24,6 +38,7 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:background="@color/colorPrimary">
+
         <ListView
             android:id="@+id/widget_list"
             android:layout_width="match_parent"
@@ -39,6 +54,7 @@
             android:fontFamily="sans-serif-condensed"
             android:textAppearance="?android:textAppearanceLarge"
             android:text="@string/error_no_stocks"/>
+
     </FrameLayout>
 
 </LinearLayout>

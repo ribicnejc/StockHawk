@@ -10,6 +10,8 @@ import android.widget.RemoteViewsService;
 
 import com.udacity.stockhawk.R;
 import com.udacity.stockhawk.data.Contract;
+import com.udacity.stockhawk.data.PrefUtils;
+import com.udacity.stockhawk.ui.MainActivity;
 
 public class DetailWidgetRemoteViewsService extends RemoteViewsService {
     public final String LOG_TAG = DetailWidgetRemoteViewsService.class.getSimpleName();
@@ -27,7 +29,7 @@ public class DetailWidgetRemoteViewsService extends RemoteViewsService {
     static final int INDEX_POSITION_PERCENTAGE_CHANGE = 4;
 
     @Override
-    public RemoteViewsFactory onGetViewFactory(Intent intent) {
+    public RemoteViewsFactory onGetViewFactory(final Intent intent) {
         return new RemoteViewsFactory() {
             private Cursor data = null;
             @Override
@@ -73,6 +75,10 @@ public class DetailWidgetRemoteViewsService extends RemoteViewsService {
                 String stockPercentageChange = data.getString(INDEX_POSITION_PERCENTAGE_CHANGE);
                 //TODO check which is checked, maybe its saved in prefs, or you save it in prefs!
 
+//                String pref = PrefUtils.getDisplayMode(intent.)
+//                        .equals(getString(R.string.pref_display_mode_absolute_key));
+
+
                 views.setTextViewText(R.id.widget_symbol, stockSymbol);
                 views.setTextViewText(R.id.widget_price, stockPrice);
                 views.setTextViewText(R.id.widget_change, stockAbsoluteChange);
@@ -80,8 +86,9 @@ public class DetailWidgetRemoteViewsService extends RemoteViewsService {
                 //TODO content description for widget
 
                 final Intent fillInIntent = new Intent();
-                Uri uri = Contract.Quote.URI;
-                fillInIntent.setData(uri);
+                //Uri uri = Contract.Quote.makeUriForStock(stockSymbol);
+                fillInIntent.putExtra(MainActivity.EXTRA_SYMBOL, stockSymbol);
+                //fillInIntent.setData(uri);
                 views.setOnClickFillInIntent(R.id.widget_list_item, fillInIntent);
                 return views;
             }
