@@ -5,8 +5,10 @@ import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
@@ -27,25 +29,42 @@ import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import timber.log.Timber;
 
 public class MoreInfoActivity extends AppCompatActivity {
 
+    /*
+    Quote.COLUMN_SYMBOL + " TEXT NOT NULL, "
+                + Quote.COLUMN_PRICE + " REAL NOT NULL, "
+                + Quote.COLUMN_ABSOLUTE_CHANGE + " REAL NOT NULL, "
+                + Quote.COLUMN_PERCENTAGE_CHANGE
+     */
     private String symbol = null;
-    private static String[] HISTORY = {
+    private static String[] DATA = {
+            Contract.Quote.COLUMN_PRICE,
+            Contract.Quote.COLUMN_ABSOLUTE_CHANGE,
             Contract.Quote.COLUMN_HISTORY
     };
     private XAxis xAxis;
     private YAxis yAxisLeft;
     private YAxis yAxisRight;
 
-    private LineChart mChart;
+
+    @BindView(R.id.symbol)
+    public TextView mTextViewSymbol;
+    @BindView(R.id.price)
+    public TextView mTextViewPrice;
+    @BindView(R.id.change)
+    public TextView mTextViewChange;
+    @BindView(R.id.chart)
+    public LineChart mChart;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_more_info);
-
-        mChart = (LineChart) findViewById(R.id.chart);
+        ButterKnife.bind(this);
         xAxis = mChart.getXAxis();
         xAxis.setTextColor(Color.WHITE);
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
@@ -61,7 +80,6 @@ public class MoreInfoActivity extends AppCompatActivity {
             symbol = getIntent().getStringExtra(MainActivity.EXTRA_SYMBOL);
             setTitle(symbol);
             getData(symbol);
-
         }
 
     }
@@ -73,9 +91,8 @@ public class MoreInfoActivity extends AppCompatActivity {
             protected Cursor doInBackground(Void... voids) {
                 Cursor data;
                 Uri uri = Contract.Quote.makeUriForStock(symbol);
-                data = getContentResolver().query(uri, HISTORY, null, null, null);
+                data = getContentResolver().query(uri, DATA, null, null, null);
                 return data;
-
             }
             @Override
             protected void onPostExecute(Cursor c) {
@@ -89,9 +106,27 @@ public class MoreInfoActivity extends AppCompatActivity {
     private void drawGraph(Cursor data){
         if(data == null || !data.moveToFirst()) return;
         String history = null;
+        String price;
+        String change;
         try{
             do{
-                history = data.getString(0);
+                int INDEX_PRICE = 0;
+                int INDEX_ABSOLUTE_CHANGE = 1;
+                int INDEX_HISTORY = 2;
+
+                price = data.getString(INDEX_PRICE);
+                change = data.getString(INDEX_ABSOLUTE_CHANGE);
+                history = data.getString(INDEX_HISTORY);
+
+                mTextViewPrice.setText(String.format("$%s",price));
+                if (Float.parseFloat(change) >= 0){
+                    mTextViewChange.setBackgroundResource(R.drawable.percent_change_pill_green);
+                    mTextViewChange.setText(String.format("+$%s", change));
+                }else{
+                    mTextViewChange.setBackgroundResource(R.drawable.percent_change_pill_red);
+                    mTextViewChange.setText(String.format("-$%s", change.substring(1)));
+                }
+                mTextViewSymbol.setText(symbol);
             }
             while (data.moveToNext());
         }
@@ -101,10 +136,11 @@ public class MoreInfoActivity extends AppCompatActivity {
         finally {
             data.close();
         }
-        setData(history);
+        if (history != null)
+            setData(history);
     }
 
-    private void setData(String history){
+    private void setData(@NonNull String history){
         ArrayList<Entry> values = new ArrayList<>();
         String[] dat = history.split("\n");
         String[] dat2 = new String[dat.length];
@@ -176,9 +212,6 @@ public class MoreInfoActivity extends AppCompatActivity {
 
         }
     }
-    //TODO add few more info elements
-    //TODO check graph for loops for incorrectness
-    //TODO after all coding check for RTL and TALK BACK and check for all STRINGS and translatable string also
     private class MyYAxisValueFormatter implements IAxisValueFormatter {
 
         private DecimalFormat mFormat;

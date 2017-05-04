@@ -48,7 +48,6 @@ public final class QuoteSyncJob {
         Calendar to = Calendar.getInstance();
         from.add(Calendar.YEAR, -YEARS_OF_HISTORY);
 
-        //TODO check why is failing with multiple delete swipes.
         try {
 
             Set<String> stockPref = PrefUtils.getStocks(context);

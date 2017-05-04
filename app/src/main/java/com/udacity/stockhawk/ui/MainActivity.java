@@ -1,5 +1,7 @@
 package com.udacity.stockhawk.ui;
 
+import android.appwidget.AppWidgetManager;
+import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -29,6 +31,8 @@ import com.udacity.stockhawk.widget.DetailWidgetProvider;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
+
+import static com.udacity.stockhawk.sync.QuoteSyncJob.ACTION_DATA_UPDATED;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>,
         SwipeRefreshLayout.OnRefreshListener,
@@ -84,9 +88,19 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 String symbol = adapter.getSymbolAtPosition(viewHolder.getAdapterPosition());
                 getContentResolver().delete(Contract.Quote.makeUriForStock(symbol), null, null);
                 PrefUtils.removeStock(MainActivity.this, symbol);
+
+                /*If you are wondering why I commented onRefresh(); is because, when
+                  something is deleted, and then onRefresh is executed, and meanwhile something else
+                  is also deleted, and then another thread is activated, and prefs are smaller and smaller
+                  and suddenly thread is finished and it insert new data in db, and then, db has more items,
+                  then prefs, and then this data in db is never refreshed. If you ask me, i would fix the whole
+                  concept of saving. But this is not what I was asked to do.
+
+                  Hope you will understand that!
+                  Have a nice day!
+                */
                 checkData();
-                //TODO explain why
-                //TODO check if list is empty!!! and show msg!
+
                 //onRefresh();
             }
         }).attachToRecyclerView(stockRecyclerView);
@@ -102,6 +116,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     public void checkData(){
+        Intent dataUpdatedIntent = new Intent(ACTION_DATA_UPDATED);
+        this.sendBroadcast(dataUpdatedIntent);
         if (PrefUtils.getStocks(this).size() == 0) {
             error.setText(getString(R.string.error_no_stocks));
             error.setVisibility(View.VISIBLE);
@@ -199,10 +215,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             PrefUtils.toggleDisplayMode(this);
             setDisplayModeMenuItemIcon(item);
             adapter.notifyDataSetChanged();
-
-            Intent intent = new Intent(this, DetailWidgetProvider.class);
-            intent.setAction(QuoteSyncJob.ACTION_DATA_UPDATED);
-            sendBroadcast(intent);
+            Intent dataUpdatedIntent = new Intent(ACTION_DATA_UPDATED);
+            this.sendBroadcast(dataUpdatedIntent);
 
             return true;
         }

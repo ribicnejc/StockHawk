@@ -1,12 +1,12 @@
 <resources>
-    <string name="app_name">Stock Hawk</string>
+    <string name="app_name" translatable="false">Stock Hawk</string>
 
     <string name="pref_stocks_initialized_key" translatable="false">initialized</string>
 
     <string name="pref_stocks_key" translatable="false">stocks</string>
 
 
-    <string name="pref_display_mode_key" translatable="false">displayMode</string>
+    <string name="pref_display_mode_key" translatable="false">display_mode_change_value_to_dollar_or_percent</string>
     <string name="pref_display_mode_default" translatable="false">@string/pref_display_mode_percentage_key</string>
 
     <string name="pref_display_mode_absolute_key" translatable="false">absolute</string>
@@ -35,5 +35,6 @@
     <string name="content_description_item">When pressed you get graph of stock over time and more info about stock</string>
     <string name="title_widget">Stock checker</string>
     <string name="content_description_widget_dollar">Icon to change dollars to percent</string>
+    <string name="content_description_widget_open_app">Open stock hawk application</string>
 
 </resources>
