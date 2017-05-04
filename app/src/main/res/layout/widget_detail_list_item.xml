@@ -4,8 +4,7 @@
     android:id="@+id/widget_list_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/touch_selector_detail">
-<!--TODO add focusable and content desc-->
+    android:background="@drawable/ripple">
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
@@ -15,9 +14,6 @@
         android:orientation="horizontal"
         android:paddingLeft="16dp"
         android:paddingRight="16dp">
-        <!--
-        android:focusable="true"
-        TODO add riplle effect-->
         <TextView
             android:id="@+id/widget_symbol"
             style="@style/StockSymbolTextStyle"

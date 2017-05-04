@@ -3,17 +3,14 @@ package com.udacity.stockhawk.sync;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.ComponentName;
-import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.widget.Toast;
 
 import com.udacity.stockhawk.data.Contract;
 import com.udacity.stockhawk.data.PrefUtils;
-import com.udacity.stockhawk.ui.MainActivity;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -51,7 +48,7 @@ public final class QuoteSyncJob {
         Calendar to = Calendar.getInstance();
         from.add(Calendar.YEAR, -YEARS_OF_HISTORY);
 
-        //TODO check why is failing with insert, and its constatlly loading.
+        //TODO check why is failing with multiple delete swipes.
         try {
 
             Set<String> stockPref = PrefUtils.getStocks(context);
@@ -64,7 +61,6 @@ public final class QuoteSyncJob {
             if (stockArray.length == 0) {
                 return;
             }
-            //TODO out of bound array at yahooFinance
             Map<String, Stock> quotes = YahooFinance.get(stockArray);
             Iterator<String> iterator = stockCopy.iterator();
 
@@ -79,9 +75,8 @@ public final class QuoteSyncJob {
                 Stock stock = quotes.get(symbol);
                 StockQuote quote = stock.getQuote();
 
-                if (quote.getAsk() == null){
+                if (quote.getPrice() == null || quote.getChange() == null){
                     PrefUtils.removeStock(context, symbol);
-                    //context.getContentResolver().delete(Contract.Quote.makeUriForStock(symbol), null, null);
                     continue;
                 }
 
@@ -91,7 +86,6 @@ public final class QuoteSyncJob {
 
                 // WARNING! Don't request historical data for a stock that doesn't exist!
                 // The request will hang forever X_x
-                //TODO here get data for history data
                 List<HistoricalQuote> history = stock.getHistory(from, to, Interval.WEEKLY);
 
                 StringBuilder historyBuilder = new StringBuilder();
@@ -126,6 +120,8 @@ public final class QuoteSyncJob {
 
         } catch (IOException exception) {
             Timber.e(exception, "Error fetching stock quotes");
+        } catch (Exception e){
+            Timber.e(e, "Other things went wrong");
         }
     }
 

@@ -10,11 +10,9 @@ import android.widget.RemoteViewsService;
 
 import com.udacity.stockhawk.R;
 import com.udacity.stockhawk.data.Contract;
-import com.udacity.stockhawk.data.PrefUtils;
 import com.udacity.stockhawk.ui.MainActivity;
 
 public class DetailWidgetRemoteViewsService extends RemoteViewsService {
-    public final String LOG_TAG = DetailWidgetRemoteViewsService.class.getSimpleName();
     private static final String[] STOCK_COLUMNS = {
             Contract.Quote.TABLE_NAME + "." + Contract.Quote._ID,
             Contract.Quote.COLUMN_SYMBOL,
@@ -68,7 +66,6 @@ public class DetailWidgetRemoteViewsService extends RemoteViewsService {
                     return null;
                 }
                 RemoteViews views = new RemoteViews(getPackageName(), R.layout.widget_detail_list_item);
-                int stockId = data.getInt(INDEX_POSITION_ID);
                 String stockSymbol = data.getString(INDEX_POSITION_SYMBOL);
                 String stockPrice = data.getString(INDEX_POSITION_PRICE);
                 String stockAbsoluteChange = data.getString(INDEX_POSITION_ABSOLUTE_CHANGE);
@@ -78,7 +75,7 @@ public class DetailWidgetRemoteViewsService extends RemoteViewsService {
                 boolean percent = false;
                 if (intent.hasExtra(DetailWidgetProvider.EXTRA_PERCENT)){
                     String extra = intent.getStringExtra(DetailWidgetProvider.EXTRA_PERCENT);
-                    if (extra.equals("percentage")){
+                    if (extra.equals(getString(R.string.pref_display_mode_percentage_key))){
                         together = stockPercentageChange;
                         percent = true;
                     }
@@ -102,17 +99,10 @@ public class DetailWidgetRemoteViewsService extends RemoteViewsService {
                 }
 
 
-
-                //TODO content description for widget
-
                 final Intent fillInIntent = new Intent();
                 fillInIntent.putExtra(MainActivity.EXTRA_SYMBOL, stockSymbol);
                 views.setOnClickFillInIntent(R.id.widget_list_item, fillInIntent);
                 return views;
-            }
-
-            private void setRemoteContentDescription(RemoteViews views, String description) {
-                //views.setContentDescription(R.id.widget_icon, description);
             }
 
             @Override

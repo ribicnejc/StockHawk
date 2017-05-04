@@ -8,8 +8,8 @@
     android:gravity="center_vertical"
     android:orientation="horizontal"
     android:paddingLeft="16dp"
-    android:paddingRight="16dp">
-    <!--TODO add riplle effect-->
+    android:paddingRight="16dp"
+    android:background="@drawable/ripple">
     <TextView
         android:id="@+id/symbol"
         style="@style/StockSymbolTextStyle"

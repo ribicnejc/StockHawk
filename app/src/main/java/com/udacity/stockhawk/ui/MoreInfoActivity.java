@@ -178,10 +178,17 @@ public class MoreInfoActivity extends AppCompatActivity {
 
         @Override
         public String getFormattedValue(float value, AxisBase axis) {
-            return mValues[(int) value];
+            try{
+                return mValues[(int) value];
+            }catch (Exception e){
+                return mValues[0];
+            }
+
         }
     }
-
+    //TODO add few more info elements
+    //TODO check graph for loops for incorrectness
+    //TODO after all coding check for RTL and TALK BACK and check for all STRINGS and translatable string also
     public class MyYAxisValueFormatter implements IAxisValueFormatter {
 
         private DecimalFormat mFormat;
